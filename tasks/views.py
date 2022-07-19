@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from .models import Task
+from .forms import TaskForm
 
 def taskList(request):
     tasks = Task.objects.all()
@@ -12,6 +13,10 @@ def taskView(request, id):
 
 def helloWorld(request):
     return HttpResponse('Hello World!')
+
+def newTask(request):
+    form = TaskForm()
+    return render(request, 'tasks/addtask.html', {'form': form})
 
 def yourName(request, name):
     return render(request, 'tasks/yourName.html', {'name': name})
