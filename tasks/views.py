@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.core.paginator import Paginator
 from django.http import HttpResponse
 from .models import Task
 from .forms import TaskForm
@@ -7,7 +8,17 @@ from django.contrib import messages
 # Visualização dos dados (R do CRUD)
 def taskList(request):
     # Obtém todas as tasks e as ordena pela data de criação
-    tasks = Task.objects.all().order_by('-created_at')
+    tasks_list = Task.objects.all().order_by('-created_at')
+
+    #Paginação das tarefas de 3 em 3
+    paginator = Paginator(tasks_list, 3)
+
+    # Página atual
+    page = request.GET.get('page')
+
+    #Pegando as tasks da página atual
+    tasks = paginator.get_page(page)
+
     return render(request, 'tasks/list.html', {'tasks': tasks})
 
 # Visualização de uma task específica, selecionada pelo id
