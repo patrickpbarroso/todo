@@ -3,6 +3,12 @@ $(document).ready(function(){
     // Recebe o botão de deletar
     var deleteBtn = $('.delete-btn');
 
+    // Recebe o botão de buscar
+    var searchBtn = $('#search-btn');
+
+    // Recebe o formulário de busca
+    var searchForm = $('#search-form');
+
     // Quando é clicado no botão acima executa a função
     $(deleteBtn).on('click', function(evento){
 
@@ -21,5 +27,9 @@ $(document).ready(function(){
             window.location.href = delLink;
         }
     })
+
+    $(searchBtn).on('click', function(){
+        searchForm.submit();
+    });
 
 });

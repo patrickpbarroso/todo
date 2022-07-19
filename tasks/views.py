@@ -7,17 +7,26 @@ from django.contrib import messages
 
 # Visualização dos dados (R do CRUD)
 def taskList(request):
-    # Obtém todas as tasks e as ordena pela data de criação
-    tasks_list = Task.objects.all().order_by('-created_at')
 
-    #Paginação das tarefas de 3 em 3
-    paginator = Paginator(tasks_list, 3)
+    # Pega o conteúdo pesquisado
+    search = request.GET.get('search')
 
-    # Página atual
-    page = request.GET.get('page')
+    if search:
 
-    #Pegando as tasks da página atual
-    tasks = paginator.get_page(page)
+        tasks = Task.objects.filter(title__icontains=search)
+
+    else:
+        # Obtém todas as tasks e as ordena pela data de criação
+        tasks_list = Task.objects.all().order_by('-created_at')
+
+        #Paginação das tarefas de 3 em 3
+        paginator = Paginator(tasks_list, 3)
+
+        # Página atual
+        page = request.GET.get('page')
+
+        #Pegando as tasks da página atual
+        tasks = paginator.get_page(page)
 
     return render(request, 'tasks/list.html', {'tasks': tasks})
 
