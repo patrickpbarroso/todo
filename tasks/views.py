@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from .models import Task
 from .forms import TaskForm
+from django.contrib import messages
 
 # Visualização dos dados (R do CRUD)
 def taskList(request):
@@ -56,6 +57,10 @@ def deleteTask(request, id):
     task = get_object_or_404(Task, pk=id)
     # Deleta a task encontrada acima
     task.delete()
+
+    # Mostra a mensagem na tela
+    messages.info(request, 'Tarefa deletada com sucesso')
+
     # Redireciona de volta para a página inicial
     return redirect('/')
 
