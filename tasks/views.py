@@ -3,10 +3,13 @@ from django.http import HttpResponse
 from .models import Task
 from .forms import TaskForm
 
+# Visualização dos dados (R do CRUD)
 def taskList(request):
+    # Obtém todas as tasks e as ordena pela data de criação
     tasks = Task.objects.all().order_by('-created_at')
     return render(request, 'tasks/list.html', {'tasks': tasks})
 
+# Visualização de uma task específica, selecionada pelo id
 def taskView(request, id):
     task = get_object_or_404(Task, pk=id)
     return render(request,'tasks/task.html', {'task': task})
@@ -47,6 +50,14 @@ def editTask(request, id):
 
     else:
         return render(request, 'tasks/edittask.html', {'form': form, 'task': task})
+
+def deleteTask(request, id):
+    # Obtém a task com o id passado
+    task = get_object_or_404(Task, pk=id)
+    # Deleta a task encontrada acima
+    task.delete()
+    # Redireciona de volta para a página inicial
+    return redirect('/')
 
 def yourName(request, name):
     return render(request, 'tasks/yourName.html', {'name': name})
