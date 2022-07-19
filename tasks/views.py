@@ -14,6 +14,7 @@ def taskView(request, id):
 def helloWorld(request):
     return HttpResponse('Hello World!')
 
+# Inserção dos dados (C do CRUD)
 def newTask(request):
     # Se for post ele envia os dados para o banco
     if request.method == 'POST':
@@ -29,6 +30,23 @@ def newTask(request):
     else:
         form = TaskForm()
         return render(request, 'tasks/addtask.html', {'form': form})
+
+# Edição dos dados (U do CRUD)
+def editTask(request, id):
+    task = get_object_or_404(Task, pk=id)
+    form = TaskForm(instance=task)
+
+    # Depois de chamar o else para fazer as alterações, aqui as alterações são salvas no banco
+    if(request.method == 'POST'):
+        form = TaskForm(request.POST, instance=task)
+        if(form.is_valid()):
+            task.save()
+            return redirect('/')
+        else:
+            return render(request, 'tasks/edittask.html', {'form': form, 'task': task})
+
+    else:
+        return render(request, 'tasks/edittask.html', {'form': form, 'task': task})
 
 def yourName(request, name):
     return render(request, 'tasks/yourName.html', {'name': name})
