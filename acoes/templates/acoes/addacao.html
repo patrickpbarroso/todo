@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{%block title%} Adicione uma ação {%endblock title%}
+
+{%block content%} 
+    <div class="offset-1 col-10 list-div"> 
+        <h1>Adicione a sua nova ação: </h1>
+        <form method="POST"> 
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" class="btn btn-sucess" value="Criar Ação">
+        </form>
+    </div>
+{%endblock content%}

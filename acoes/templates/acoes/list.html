@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{%block title%} Lista de Ações {%endblock title%}
+
+{%block content%} 
+    <div class="offset-1 col-10 list-div"> 
+        <h1>Lista de Ações</h1>
+        <a id="add-link" href="newacao/">
+            <!-- Colocamos nome no atributo class para poder estilizar no css -->
+            <div class="col-2 add-div">
+                <i class="fas fa-plus"> </i> Adicionar ação
+            </div>
+        </a>
+        <div class="col-9 search-div">
+            <form method="GET" id="search-form">
+                <input class="form-control" type="text" id="search" name="search" placeholder="Digite o código da ação para buscar" value="{{ request.GET.search }}">
+                <i class="fas fa-search" id="search-btn"></i>
+            </form>
+        </div>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages%}
+                <li {% if message.tags %}class="alert alert-{{message.tags}}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <ul class="acao-list">
+            {% for acao in acoes %}
+            <li class="acao-item">
+                <span><a href="/acoes/acao/{{acao.id}}">{{acao.codigo}}</a></span>
+                <a href="delete/{{acao.id}}" class="delete-btn"><span><i class="fas fa-trash"></i></span></a>
+                <a href="edit/{{acao.id}}"><span><i class="fas fa-edit"></i></span></a>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="pagination">
+            <span class="step-links">
+                {% if acoes.has_previous %}
+                    <a href ="?page={{ acoes.previous_page_number }}"><i class="fas fa-arrow-left"></i></a>
+                {%endif%}
+
+                {% if acoes.has_next %}
+                    <a href ="?page={{ acoes.next_page_number }}"><i class="fas fa-arrow-right"></i></a>
+                {%endif%}
+
+                {% if acoes.paginator.num_pages %}
+                <span class="current">
+                    {{ acoes.number }} de {{ acoes.paginator.num_pages }}
+                </span>
+                {% endif %}
+
+            </span>
+        </div>
+    </div>
+{%endblock content%}

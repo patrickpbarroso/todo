@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{%block title%} Lista de Ações {%endblock title%}
+
+{%block content%} 
+    <div class="offset-1 col-10 list-div"> 
+        <h1>{{acao.codigo}}</h1>
+        <p>{{acao.descricao}}</p>
+        <p>{{acao.data}}</p>
+        <p>{{acao.volume}}</p>
+    </div>
+{%endblock content%}
