@@ -5,6 +5,9 @@ from django.http import HttpResponse
 from .models import Acao
 from .forms import AcaoForm
 from django.contrib import messages
+import yfinance as yf
+import pandas as pd
+import numpy as np
 
 # Create your views here.
 
@@ -22,20 +25,44 @@ def acoesList(request):
 
     # Se o usuário não digitar nada na busca, mostra todas as tasks (tarefas) ordenadas pela data de criação 
     else:
-        # Obtém todas as tasks e as ordena pela data de criação
-        acoes_list = Acao.objects.all().order_by('-codigo')
+        # Populando a base de dados
+        # Obtém o ticket de uma ação
+        msft = yf.Ticker("PETR4.SA")
 
-        #Paginação das tarefas de 3 em 3
-        paginator = Paginator(acoes_list, 3)
+        # Obtém todas as informações da ação
+        acao_info = msft.info
+        
+        # Obtém dados históricos de mercado para a ação
+        hist = msft.history(period="max")
+        hist = hist.head(25)
 
-        # Página atual
-        page = request.GET.get('page')
+        # Cria duas colunas no dataframe para guardar código e descrição da ação
+        hist['Code'] = acao_info['symbol']
+        hist['Description'] = acao_info['longName']
 
-        #Pegando as tasks da página atual
-        acoes = paginator.get_page(page)
+        #Verifica se a base de dados já foi populada. Se sim, continua. Se não, preenche com os dados do yfinance
+
+
+        if not Acao.objects.filter(codigo__icontains=hist.iloc[1].Code):
+            for date, row in hist.iterrows():
+                new_stock = Acao.objects.create(
+                    codigo = row.Code,
+                    descricao = row.Description,
+                    data = date,
+                    open = row.Open,
+                    close = row.Close,
+                    high = row.High,
+                    low = row.Low,
+                    volume = row.Volume
+                )
+                new_stock.save()
+        
+        # Obtém todas as ações da base de dados
+        acoes_list = Acao.objects.all()
+
 
     # Envia as tasks selecionadas para serem renderizadas no código html
-    return render(request, 'acoes/list.html', {'acoes': acoes})
+    return render(request, 'acoes/list.html', {'acoes': acoes_list})
 
 # Visualização de uma task específica, selecionada pelo id
 def acoesView(request, id):
