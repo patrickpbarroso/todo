@@ -20,8 +20,8 @@ def acoesList(request):
     # Se o usuário digitar na barra de pesquisa
     if search:
 
-        # Filtra as tasks pelo o que foi digitado pelo usuário
-        acoes = Acao.objects.filter(codigo__icontains=search)
+        # Filtra as ações pelo o que foi digitado pelo usuário
+        acoes_list = Acao.objects.filter(codigo__icontains=search)
 
     # Se o usuário não digitar nada na busca, mostra todas as tasks (tarefas) ordenadas pela data de criação 
     else:
